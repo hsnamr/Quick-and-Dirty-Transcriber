@@ -105,12 +105,13 @@ public class TranscriptionRequestServiceImpl implements TranscriptionRequestServ
         );
 
         // 3. Validate quota
-        try {
-            quotaService.validateQuota(userId, metadata.getDurationSeconds());
-        } catch (Exception e) {
-            logger.warn("Quota validation failed for user {}: {}", userId, e.getMessage());
-            throw e; // Re-throw quota exceptions
-        }
+        // COMMENTED OUT: Quota calculation disabled
+        // try {
+        //     quotaService.validateQuota(userId, metadata.getDurationSeconds());
+        // } catch (Exception e) {
+        //     logger.warn("Quota validation failed for user {}: {}", userId, e.getMessage());
+        //     throw e; // Re-throw quota exceptions
+        // }
 
         // 4. Resolve language
         TranscriptionLanguage language = languageService.resolveLanguage(requestDTO.getLanguage());
@@ -144,15 +145,16 @@ public class TranscriptionRequestServiceImpl implements TranscriptionRequestServ
         logger.info("Created transcription request with ID: {} (numericId: {})", request.getId(), request.getNumericId());
 
         // 7. Consume quota (with transaction)
-        try {
-            quotaService.consumeQuota(userId, request.getNumericId(), metadata.getDurationSeconds());
-        } catch (Exception e) {
-            // If quota consumption fails, mark request as failed
-            logger.error("Quota consumption failed for request {}", request.getId(), e);
-            request.setStatus(Status.FAILED);
-            requestRepository.save(request);
-            throw new ValidationException("Failed to consume quota: " + e.getMessage());
-        }
+        // COMMENTED OUT: Quota calculation disabled
+        // try {
+        //     quotaService.consumeQuota(userId, request.getNumericId(), metadata.getDurationSeconds());
+        // } catch (Exception e) {
+        //     // If quota consumption fails, mark request as failed
+        //     logger.error("Quota consumption failed for request {}", request.getId(), e);
+        //     request.setStatus(Status.FAILED);
+        //     requestRepository.save(request);
+        //     throw new ValidationException("Failed to consume quota: " + e.getMessage());
+        // }
 
         // 8. Process transcription (async or sync based on configuration)
         try {

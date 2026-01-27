@@ -87,20 +87,21 @@ public class StatusManagementServiceImpl implements StatusManagementService {
         logger.info("Handling status change to FAILED for request {}: {}", request.getId(), errorMessage);
 
         // Restore quota if it was consumed
-        if (request.getQuotaConsumed() != null && request.getQuotaConsumed()) {
-            try {
-                // Use numericId for quota service
-                quotaService.restoreQuota(
-                        request.getUserId(),
-                        request.getNumericId(),
-                        request.getDurationSecs().doubleValue()
-                );
-                logger.info("Restored quota for failed request {}", request.getId());
-            } catch (Exception e) {
-                logger.error("Failed to restore quota for request {}", request.getId(), e);
-                // Log but don't fail - quota restoration is best effort
-            }
-        }
+        // COMMENTED OUT: Quota calculation disabled
+        // if (request.getQuotaConsumed() != null && request.getQuotaConsumed()) {
+        //     try {
+        //         // Use numericId for quota service
+        //         quotaService.restoreQuota(
+        //                 request.getUserId(),
+        //                 request.getNumericId(),
+        //                 request.getDurationSecs().doubleValue()
+        //         );
+        //         logger.info("Restored quota for failed request {}", request.getId());
+        //     } catch (Exception e) {
+        //         logger.error("Failed to restore quota for request {}", request.getId(), e);
+        //         // Log but don't fail - quota restoration is best effort
+        //     }
+        // }
 
         // Send failure email
         try {
