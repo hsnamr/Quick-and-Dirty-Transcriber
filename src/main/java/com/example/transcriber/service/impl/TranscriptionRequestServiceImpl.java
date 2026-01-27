@@ -50,6 +50,7 @@ public class TranscriptionRequestServiceImpl implements TranscriptionRequestServ
     private final StatusManagementService statusManagementService;
     private final EmailService emailService;
     private final SequenceService sequenceService;
+    private final MessageQueueService messageQueueService;
 
     @Value("${transcription.engine.type:vosk}")
     private String transcriptionEngineType;
@@ -64,7 +65,8 @@ public class TranscriptionRequestServiceImpl implements TranscriptionRequestServ
             TranscriptionEngineService transcriptionEngineService,
             StatusManagementService statusManagementService,
             EmailService emailService,
-            SequenceService sequenceService) {
+            SequenceService sequenceService,
+            MessageQueueService messageQueueService) {
         this.requestRepository = requestRepository;
         this.mongoTemplate = mongoTemplate;
         this.metadataExtractionService = metadataExtractionService;
@@ -74,6 +76,7 @@ public class TranscriptionRequestServiceImpl implements TranscriptionRequestServ
         this.statusManagementService = statusManagementService;
         this.emailService = emailService;
         this.sequenceService = sequenceService;
+        this.messageQueueService = messageQueueService;
     }
 
     @Override
@@ -390,6 +393,15 @@ public class TranscriptionRequestServiceImpl implements TranscriptionRequestServ
             throw new ValidationException(
                     "Transcription is not completed yet. Only completed transcriptions can be viewed."
             );
+        }
+
+        // Send frontend broadcast message for real-time updates
+        try {
+            messageQueueService.sendFrontendBroadcast(request);
+            logger.debug("Sent frontend broadcast for request {}", id);
+        } catch (Exception e) {
+            logger.error("Failed to send frontend broadcast for request {}", id, e);
+            // Don't fail the request if broadcast fails
         }
 
         return convertToDTO(request);
