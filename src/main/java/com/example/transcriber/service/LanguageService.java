@@ -1,6 +1,6 @@
-package com.example.audiototext.service;
+package com.example.transcriber.service;
 
-import com.example.audiototext.model.TranscriptionLanguage;
+import com.example.transcriber.model.TranscriptionLanguage;
 
 import java.util.List;
 

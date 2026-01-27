@@ -1,7 +1,7 @@
-package com.example.audiototext.model;
+package com.example.transcriber.model;
 
-import com.example.audiototext.model.enums.Category;
-import com.example.audiototext.model.enums.Status;
+import com.example.transcriber.model.enums.Category;
+import com.example.transcriber.model.enums.Status;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.LastModifiedDate;

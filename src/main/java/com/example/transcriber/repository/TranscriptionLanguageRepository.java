@@ -1,6 +1,6 @@
-package com.example.audiototext.repository;
+package com.example.transcriber.repository;
 
-import com.example.audiototext.model.TranscriptionLanguage;
+import com.example.transcriber.model.TranscriptionLanguage;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Repository;
 

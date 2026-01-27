@@ -1,4 +1,4 @@
-package com.example.audiototext.security;
+package com.example.transcriber.security;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;

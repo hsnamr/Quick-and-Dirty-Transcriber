@@ -1,7 +1,7 @@
-package com.example.audiototext.service.impl;
+package com.example.transcriber.service.impl;
 
-import com.example.audiototext.exception.ExternalServiceException;
-import com.example.audiototext.service.TranscriptionServiceClient;
+import com.example.transcriber.exception.ExternalServiceException;
+import com.example.transcriber.service.TranscriptionServiceClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;

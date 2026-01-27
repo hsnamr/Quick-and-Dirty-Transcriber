@@ -1,4 +1,4 @@
-package com.example.audiototext.exception;
+package com.example.transcriber.exception;
 
 public class ResourceNotFoundException extends RuntimeException {
     public ResourceNotFoundException(String message) {

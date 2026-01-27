@@ -1,4 +1,4 @@
-package com.example.audiototext.config;
+package com.example.transcriber.config;
 
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.EnableCaching;

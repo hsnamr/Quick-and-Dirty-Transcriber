@@ -1,7 +1,7 @@
-package com.example.audiototext.service.impl;
+package com.example.transcriber.service.impl;
 
-import com.example.audiototext.exception.ValidationException;
-import com.example.audiototext.service.MetadataExtractionService;
+import com.example.transcriber.exception.ValidationException;
+import com.example.transcriber.service.MetadataExtractionService;
 import org.apache.tika.Tika;
 import org.apache.tika.metadata.Metadata;
 import org.apache.tika.parser.ParseContext;

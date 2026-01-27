@@ -1,4 +1,4 @@
-package com.example.audiototext.exception;
+package com.example.transcriber.exception;
 
 import java.util.List;
 

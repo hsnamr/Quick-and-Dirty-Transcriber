@@ -1,7 +1,7 @@
-package com.example.audiototext.consumer;
+package com.example.transcriber.consumer;
 
-import com.example.audiototext.model.enums.Status;
-import com.example.audiototext.service.StatusManagementService;
+import com.example.transcriber.model.enums.Status;
+import com.example.transcriber.service.StatusManagementService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.kafka.annotation.KafkaListener;

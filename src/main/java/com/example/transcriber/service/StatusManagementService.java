@@ -1,7 +1,7 @@
-package com.example.audiototext.service;
+package com.example.transcriber.service;
 
-import com.example.audiototext.model.TranscriptionRequest;
-import com.example.audiototext.model.enums.Status;
+import com.example.transcriber.model.TranscriptionRequest;
+import com.example.transcriber.model.enums.Status;
 
 public interface StatusManagementService {
 

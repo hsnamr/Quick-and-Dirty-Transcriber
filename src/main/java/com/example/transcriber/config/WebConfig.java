@@ -1,4 +1,4 @@
-package com.example.audiototext.config;
+package com.example.transcriber.config;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;

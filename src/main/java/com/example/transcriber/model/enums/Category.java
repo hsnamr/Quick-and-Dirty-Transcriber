@@ -1,4 +1,4 @@
-package com.example.audiototext.model.enums;
+package com.example.transcriber.model.enums;
 
 public enum Category {
     MEETING(0, "meeting", "Meeting"),

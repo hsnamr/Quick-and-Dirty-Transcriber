@@ -1,9 +1,9 @@
-package com.example.audiototext.service.impl;
+package com.example.transcriber.service.impl;
 
-import com.example.audiototext.exception.ResourceNotFoundException;
-import com.example.audiototext.model.TranscriptionLanguage;
-import com.example.audiototext.repository.TranscriptionLanguageRepository;
-import com.example.audiototext.service.LanguageService;
+import com.example.transcriber.exception.ResourceNotFoundException;
+import com.example.transcriber.model.TranscriptionLanguage;
+import com.example.transcriber.repository.TranscriptionLanguageRepository;
+import com.example.transcriber.service.LanguageService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.cache.annotation.Cacheable;

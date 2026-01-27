@@ -1,9 +1,9 @@
-package com.example.audiototext.service;
+package com.example.transcriber.service;
 
-import com.example.audiototext.dto.request.CreateTranscriptionRequestDTO;
-import com.example.audiototext.dto.request.UpdateTranscriptionRequestDTO;
-import com.example.audiototext.dto.response.TranscriptionRequestDTO;
-import com.example.audiototext.dto.response.TranscriptionRequestListDTO;
+import com.example.transcriber.dto.request.CreateTranscriptionRequestDTO;
+import com.example.transcriber.dto.request.UpdateTranscriptionRequestDTO;
+import com.example.transcriber.dto.response.TranscriptionRequestDTO;
+import com.example.transcriber.dto.response.TranscriptionRequestListDTO;
 
 public interface TranscriptionRequestService {
 

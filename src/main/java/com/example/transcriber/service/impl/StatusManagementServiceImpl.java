@@ -1,11 +1,11 @@
-package com.example.audiototext.service.impl;
+package com.example.transcriber.service.impl;
 
-import com.example.audiototext.model.TranscriptionRequest;
-import com.example.audiototext.model.enums.Status;
-import com.example.audiototext.repository.TranscriptionRequestRepository;
-import com.example.audiototext.service.EmailService;
-import com.example.audiototext.service.QuotaService;
-import com.example.audiototext.service.StatusManagementService;
+import com.example.transcriber.model.TranscriptionRequest;
+import com.example.transcriber.model.enums.Status;
+import com.example.transcriber.repository.TranscriptionRequestRepository;
+import com.example.transcriber.service.EmailService;
+import com.example.transcriber.service.QuotaService;
+import com.example.transcriber.service.StatusManagementService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;

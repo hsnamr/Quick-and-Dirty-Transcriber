@@ -1,10 +1,10 @@
-package com.example.audiototext.controller;
+package com.example.transcriber.controller;
 
-import com.example.audiototext.dto.request.CreateTranscriptionRequestDTO;
-import com.example.audiototext.dto.request.UpdateTranscriptionRequestDTO;
-import com.example.audiototext.dto.response.TranscriptionRequestDTO;
-import com.example.audiototext.dto.response.TranscriptionRequestListDTO;
-import com.example.audiototext.service.TranscriptionRequestService;
+import com.example.transcriber.dto.request.CreateTranscriptionRequestDTO;
+import com.example.transcriber.dto.request.UpdateTranscriptionRequestDTO;
+import com.example.transcriber.dto.response.TranscriptionRequestDTO;
+import com.example.transcriber.dto.response.TranscriptionRequestListDTO;
+import com.example.transcriber.service.TranscriptionRequestService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

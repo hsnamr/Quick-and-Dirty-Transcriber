@@ -1,4 +1,4 @@
-package com.example.audiototext.service;
+package com.example.transcriber.service;
 
 public interface QuotaService {
 

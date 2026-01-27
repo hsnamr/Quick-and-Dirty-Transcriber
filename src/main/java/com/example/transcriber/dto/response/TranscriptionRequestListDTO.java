@@ -1,4 +1,4 @@
-package com.example.audiototext.dto.response;
+package com.example.transcriber.dto.response;
 
 import java.util.List;
 

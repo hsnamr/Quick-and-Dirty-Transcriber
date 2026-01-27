@@ -1,4 +1,4 @@
-package com.example.audiototext.exception;
+package com.example.transcriber.exception;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

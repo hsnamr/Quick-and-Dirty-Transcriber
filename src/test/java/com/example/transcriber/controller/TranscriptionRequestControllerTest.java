@@ -1,4 +1,4 @@
-package com.example.audiototext.controller;
+package com.example.transcriber.controller;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;

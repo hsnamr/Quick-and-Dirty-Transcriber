@@ -1,6 +1,6 @@
-package com.example.audiototext.config;
+package com.example.transcriber.config;
 
-import com.example.audiototext.security.JwtAuthenticationFilter;
+import com.example.transcriber.security.JwtAuthenticationFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;

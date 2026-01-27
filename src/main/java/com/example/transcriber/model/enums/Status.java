@@ -1,4 +1,4 @@
-package com.example.audiototext.model.enums;
+package com.example.transcriber.model.enums;
 
 public enum Status {
     PROCESSING(0, "processing", "Processing"),

@@ -1,4 +1,4 @@
-package com.example.audiototext.config;
+package com.example.transcriber.config;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;

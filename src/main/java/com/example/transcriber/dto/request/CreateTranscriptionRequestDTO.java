@@ -1,4 +1,4 @@
-package com.example.audiototext.dto.request;
+package com.example.transcriber.dto.request;
 
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;

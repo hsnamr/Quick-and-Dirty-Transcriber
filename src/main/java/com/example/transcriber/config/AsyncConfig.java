@@ -1,4 +1,4 @@
-package com.example.audiototext.config;
+package com.example.transcriber.config;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.EnableAsync;

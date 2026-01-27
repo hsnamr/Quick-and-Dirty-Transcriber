@@ -1,4 +1,4 @@
-package com.example.audiototext.exception;
+package com.example.transcriber.exception;
 
 public class ExternalServiceException extends RuntimeException {
     private final boolean serviceUnavailable;

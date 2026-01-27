@@ -1,6 +1,6 @@
-package com.example.audiototext.service;
+package com.example.transcriber.service;
 
-import com.example.audiototext.model.TranscriptionRequest;
+import com.example.transcriber.model.TranscriptionRequest;
 
 public interface EmailService {
 

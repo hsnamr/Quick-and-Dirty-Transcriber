@@ -1,4 +1,4 @@
-package com.example.audiototext.util;
+package com.example.transcriber.util;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;

@@ -1,6 +1,6 @@
-package com.example.audiototext.repository;
+package com.example.transcriber.repository;
 
-import com.example.audiototext.model.TranscriptionRequest;
+import com.example.transcriber.model.TranscriptionRequest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.mongodb.repository.MongoRepository;
@@ -21,9 +21,9 @@ public interface TranscriptionRequestRepository extends MongoRepository<Transcri
     Page<TranscriptionRequest> findByUserId(Long userId, Pageable pageable);
 
     // MongoDB query methods for filtering
-    Page<TranscriptionRequest> findByUserIdAndStatus(Long userId, com.example.audiototext.model.enums.Status status, Pageable pageable);
+    Page<TranscriptionRequest> findByUserIdAndStatus(Long userId, com.example.transcriber.model.enums.Status status, Pageable pageable);
 
-    Page<TranscriptionRequest> findByUserIdAndCategory(Long userId, com.example.audiototext.model.enums.Category category, Pageable pageable);
+    Page<TranscriptionRequest> findByUserIdAndCategory(Long userId, com.example.transcriber.model.enums.Category category, Pageable pageable);
 
     @Query("{ 'userId': ?0, 'fileName': { $regex: ?1, $options: 'i' } }")
     Page<TranscriptionRequest> findByUserIdAndFileNameContainingIgnoreCase(Long userId, String fileName, Pageable pageable);

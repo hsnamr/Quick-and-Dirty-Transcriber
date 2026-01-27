@@ -1,4 +1,4 @@
-package com.example.audiototext.model;
+package com.example.transcriber.model;
 
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.Id;

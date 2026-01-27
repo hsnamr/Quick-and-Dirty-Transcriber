@@ -1,7 +1,7 @@
-package com.example.audiototext.config;
+package com.example.transcriber.config;
 
-import com.example.audiototext.model.TranscriptionLanguage;
-import com.example.audiototext.repository.TranscriptionLanguageRepository;
+import com.example.transcriber.model.TranscriptionLanguage;
+import com.example.transcriber.repository.TranscriptionLanguageRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.CommandLineRunner;

@@ -1,4 +1,4 @@
-package com.example.audiototext.config;
+package com.example.transcriber.config;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -45,7 +45,7 @@ public class VoskConfig {
         // The library should be included in the vosk Maven dependency
         try {
             // Verify native library availability using VoskNativeLibraryLoader
-            boolean available = com.example.audiototext.util.VoskNativeLibraryLoader.isLibraryAvailable();
+            boolean available = com.example.transcriber.util.VoskNativeLibraryLoader.isLibraryAvailable();
             if (available) {
                 logger.info("Vosk native library is available and ready to use");
             } else {

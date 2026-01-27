@@ -1,6 +1,6 @@
-package com.example.audiototext.service.impl;
+package com.example.transcriber.service.impl;
 
-import com.example.audiototext.service.SequenceService;
+import com.example.transcriber.service.SequenceService;
 import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.query.Update;

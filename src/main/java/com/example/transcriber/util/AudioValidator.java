@@ -1,4 +1,4 @@
-package com.example.audiototext.util;
+package com.example.transcriber.util;
 
 import org.apache.tika.Tika;
 import org.slf4j.Logger;
