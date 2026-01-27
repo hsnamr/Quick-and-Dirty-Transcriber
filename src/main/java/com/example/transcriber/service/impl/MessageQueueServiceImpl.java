@@ -2,6 +2,8 @@ package com.example.audiototext.service.impl;
 
 import com.example.audiototext.model.TranscriptionRequest;
 import com.example.audiototext.service.MessageQueueService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.support.SendResult;
@@ -14,6 +16,8 @@ import java.util.Map;
 
 @Service
 public class MessageQueueServiceImpl implements MessageQueueService {
+
+    private static final Logger logger = LoggerFactory.getLogger(MessageQueueServiceImpl.class);
 
     private final KafkaTemplate<String, Object> kafkaTemplate;
 
@@ -84,19 +88,30 @@ public class MessageQueueServiceImpl implements MessageQueueService {
     }
 
     private void sendMessage(String topic, String key, Object message) {
-        ListenableFuture<SendResult<String, Object>> future = kafkaTemplate.send(topic, key, message);
-        
-        future.addCallback(new ListenableFutureCallback<SendResult<String, Object>>() {
-            @Override
-            public void onSuccess(SendResult<String, Object> result) {
-                // Log success
-            }
+        try {
+            ListenableFuture<SendResult<String, Object>> future = kafkaTemplate.send(topic, key, message);
+            
+            future.addCallback(new ListenableFutureCallback<SendResult<String, Object>>() {
+                @Override
+                public void onSuccess(SendResult<String, Object> result) {
+                    logger.debug("Successfully sent message to topic: {}, key: {}, offset: {}", 
+                            topic, key, result.getRecordMetadata().offset());
+                }
 
-            @Override
-            public void onFailure(Throwable ex) {
-                // Log failure and handle error
-                // TODO: Implement error handling (retry, dead letter topic, etc.)
-            }
-        });
+                @Override
+                public void onFailure(Throwable ex) {
+                    logger.error("Failed to send message to topic: {}, key: {}", topic, key, ex);
+                    // In production, consider:
+                    // 1. Retry logic with exponential backoff
+                    // 2. Dead letter topic for failed messages
+                    // 3. Alerting/monitoring for persistent failures
+                    // 4. Circuit breaker pattern if Kafka is down
+                }
+            });
+        } catch (Exception e) {
+            logger.error("Exception while sending message to topic: {}, key: {}", topic, key, e);
+            // Re-throw to allow caller to handle if needed
+            throw new RuntimeException("Failed to send Kafka message", e);
+        }
     }
 }
