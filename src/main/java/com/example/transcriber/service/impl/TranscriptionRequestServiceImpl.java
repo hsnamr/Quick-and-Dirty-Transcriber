@@ -49,6 +49,7 @@ public class TranscriptionRequestServiceImpl implements TranscriptionRequestServ
     private final TranscriptionEngineService transcriptionEngineService;
     private final StatusManagementService statusManagementService;
     private final EmailService emailService;
+    private final SequenceService sequenceService;
 
     @Value("${transcription.engine.type:vosk}")
     private String transcriptionEngineType;
@@ -62,7 +63,8 @@ public class TranscriptionRequestServiceImpl implements TranscriptionRequestServ
             QuotaService quotaService,
             TranscriptionEngineService transcriptionEngineService,
             StatusManagementService statusManagementService,
-            EmailService emailService) {
+            EmailService emailService,
+            SequenceService sequenceService) {
         this.requestRepository = requestRepository;
         this.mongoTemplate = mongoTemplate;
         this.metadataExtractionService = metadataExtractionService;
@@ -71,6 +73,7 @@ public class TranscriptionRequestServiceImpl implements TranscriptionRequestServ
         this.transcriptionEngineService = transcriptionEngineService;
         this.statusManagementService = statusManagementService;
         this.emailService = emailService;
+        this.sequenceService = sequenceService;
     }
 
     @Override
