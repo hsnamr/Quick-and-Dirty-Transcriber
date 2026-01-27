@@ -1,26 +1,32 @@
 package com.example.audiototext.security;
 
+import io.jsonwebtoken.Claims;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 @Component
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
-    private final JwtTokenValidator jwtTokenValidator;
-    private final UserContext userContext;
+    private static final Logger logger = LoggerFactory.getLogger(JwtAuthenticationFilter.class);
 
-    public JwtAuthenticationFilter(JwtTokenValidator jwtTokenValidator, UserContext userContext) {
+    private final JwtTokenValidator jwtTokenValidator;
+
+    public JwtAuthenticationFilter(JwtTokenValidator jwtTokenValidator) {
         this.jwtTokenValidator = jwtTokenValidator;
-        this.userContext = userContext;
     }
 
     @Override
@@ -29,11 +35,60 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         String token = extractToken(request);
 
         if (token != null && jwtTokenValidator.validateToken(token)) {
-            // Set user context and authentication
-            // TODO: Implement token validation and user context setting
+            Claims claims = jwtTokenValidator.extractClaims(token);
+            if (claims != null) {
+                // Extract user ID
+                Object userIdObj = claims.get("user_id");
+                if (userIdObj == null) {
+                    userIdObj = claims.getSubject();
+                }
+                
+                Long userId = null;
+                if (userIdObj instanceof Number) {
+                    userId = ((Number) userIdObj).longValue();
+                } else if (userIdObj != null) {
+                    try {
+                        userId = Long.parseLong(userIdObj.toString());
+                    } catch (NumberFormatException e) {
+                        logger.warn("Invalid user_id format in token");
+                    }
+                }
+                
+                if (userId != null) {
+                    UserContext.setUserId(userId);
+                    
+                    // Extract permissions
+                    Object permsObj = claims.get("permissions");
+                    List<String> permissions = new ArrayList<>();
+                    if (permsObj instanceof List) {
+                        @SuppressWarnings("unchecked")
+                        List<Object> permsList = (List<Object>) permsObj;
+                        for (Object perm : permsList) {
+                            if (perm != null) {
+                                permissions.add(perm.toString());
+                            }
+                        }
+                    }
+                    UserContext.setPermissions(permissions);
+                    
+                    // Set authentication
+                    List<SimpleGrantedAuthority> authorities = permissions.stream()
+                            .map(SimpleGrantedAuthority::new)
+                            .toList();
+                    
+                    UsernamePasswordAuthenticationToken authentication = 
+                            new UsernamePasswordAuthenticationToken(userId, null, authorities);
+                    authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                    SecurityContextHolder.getContext().setAuthentication(authentication);
+                }
+            }
         }
 
-        filterChain.doFilter(request, response);
+        try {
+            filterChain.doFilter(request, response);
+        } finally {
+            UserContext.clear();
+        }
     }
 
     private String extractToken(HttpServletRequest request) {
