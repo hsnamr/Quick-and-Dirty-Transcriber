@@ -289,6 +289,86 @@ public class TranscriptionRequestServiceImpl implements TranscriptionRequestServ
         overview.setUsedQuota(usedQuota);
         
         response.setOverview(overview);
+        
+        // Build filter options
+        TranscriptionRequestListDTO.FilterOptionsDTO filters = new TranscriptionRequestListDTO.FilterOptionsDTO();
+        
+        // Get active languages
+        List<TranscriptionLanguage> activeLanguages = languageService.findAllActiveLanguages();
+        List<TranscriptionRequestListDTO.LanguageDTO> languageDTOs = activeLanguages.stream()
+                .map(lang -> {
+                    TranscriptionRequestListDTO.LanguageDTO dto = new TranscriptionRequestListDTO.LanguageDTO();
+                    try {
+                        dto.setId(Long.parseLong(lang.getId()));
+                    } catch (NumberFormatException e) {
+                        dto.setId((long) lang.getId().hashCode());
+                    }
+                    dto.setName(lang.getName());
+                    dto.setCode(lang.getCode());
+                    return dto;
+                })
+                .collect(Collectors.toList());
+        filters.setLanguages(languageDTOs);
+        
+        // Get all categories
+        List<TranscriptionRequestListDTO.CategoryDTO> categoryDTOs = Arrays.stream(Category.values())
+                .map(cat -> {
+                    TranscriptionRequestListDTO.CategoryDTO dto = new TranscriptionRequestListDTO.CategoryDTO();
+                    dto.setKey(cat.getCode());
+                    dto.setName(cat.getDisplayName());
+                    return dto;
+                })
+                .collect(Collectors.toList());
+        filters.setCategories(categoryDTOs);
+        
+        // Get all statuses
+        List<String> statusCodes = Arrays.stream(Status.values())
+                .map(Status::getCode)
+                .collect(Collectors.toList());
+        filters.setStatuses(statusCodes);
+        
+        response.setFilters(filters);
+        
+        // Build sorting options
+        List<TranscriptionRequestListDTO.SortingOptionDTO> sortingOptions = new ArrayList<>();
+        
+        TranscriptionRequestListDTO.SortingOptionDTO idSort = new TranscriptionRequestListDTO.SortingOptionDTO();
+        idSort.setKey("id");
+        idSort.setDisplayName("ID");
+        idSort.setSortBy(Arrays.asList("id"));
+        sortingOptions.add(idSort);
+        
+        TranscriptionRequestListDTO.SortingOptionDTO fileNameSort = new TranscriptionRequestListDTO.SortingOptionDTO();
+        fileNameSort.setKey("file_name");
+        fileNameSort.setDisplayName("File Name");
+        fileNameSort.setSortBy(Arrays.asList("fileName"));
+        sortingOptions.add(fileNameSort);
+        
+        TranscriptionRequestListDTO.SortingOptionDTO createdAtSort = new TranscriptionRequestListDTO.SortingOptionDTO();
+        createdAtSort.setKey("created_at");
+        createdAtSort.setDisplayName("Created At");
+        createdAtSort.setSortBy(Arrays.asList("createdAt"));
+        sortingOptions.add(createdAtSort);
+        
+        TranscriptionRequestListDTO.SortingOptionDTO categorySort = new TranscriptionRequestListDTO.SortingOptionDTO();
+        categorySort.setKey("category");
+        categorySort.setDisplayName("Category");
+        categorySort.setSortBy(Arrays.asList("category"));
+        sortingOptions.add(categorySort);
+        
+        TranscriptionRequestListDTO.SortingOptionDTO durationSort = new TranscriptionRequestListDTO.SortingOptionDTO();
+        durationSort.setKey("duration_secs");
+        durationSort.setDisplayName("Duration");
+        durationSort.setSortBy(Arrays.asList("durationSecs"));
+        sortingOptions.add(durationSort);
+        
+        TranscriptionRequestListDTO.SortingOptionDTO statusSort = new TranscriptionRequestListDTO.SortingOptionDTO();
+        statusSort.setKey("status");
+        statusSort.setDisplayName("Status");
+        statusSort.setSortBy(Arrays.asList("status"));
+        sortingOptions.add(statusSort);
+        
+        response.setSortingOptions(sortingOptions);
 
         return response;
     }

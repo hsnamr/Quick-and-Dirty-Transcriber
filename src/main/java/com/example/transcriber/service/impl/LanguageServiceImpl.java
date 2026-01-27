@@ -7,9 +7,13 @@ import com.example.audiototext.service.LanguageService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -20,9 +24,11 @@ public class LanguageServiceImpl implements LanguageService {
     private static final String DEFAULT_LANGUAGE_CODE = "auto";
 
     private final TranscriptionLanguageRepository languageRepository;
+    private final MongoTemplate mongoTemplate;
 
-    public LanguageServiceImpl(TranscriptionLanguageRepository languageRepository) {
+    public LanguageServiceImpl(TranscriptionLanguageRepository languageRepository, MongoTemplate mongoTemplate) {
         this.languageRepository = languageRepository;
+        this.mongoTemplate = mongoTemplate;
     }
 
     @Override
@@ -91,5 +97,12 @@ public class LanguageServiceImpl implements LanguageService {
         // If still not found, default to "auto"
         logger.info("Could not resolve language: {}, using default 'auto'", languageParam);
         return getDefaultLanguage();
+    }
+
+    @Override
+    @Cacheable(value = "languages", key = "'all-active'")
+    public List<TranscriptionLanguage> findAllActiveLanguages() {
+        Query query = new Query(Criteria.where("active").is(true));
+        return mongoTemplate.find(query, TranscriptionLanguage.class);
     }
 }
