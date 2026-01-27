@@ -258,10 +258,36 @@ public class TranscriptionRequestServiceImpl implements TranscriptionRequestServ
         pagination.setTotalPages(pageResult.getTotalPages());
         response.setPagination(pagination);
 
-        // Build overview (simplified - would need aggregation query in production)
+        // Build overview with statistics
         TranscriptionRequestListDTO.OverviewDTO overview = new TranscriptionRequestListDTO.OverviewDTO();
         overview.setTotal(pageResult.getTotalElements());
-        // TODO: Calculate completed, processing, failed counts and used quota
+        
+        // Calculate status counts using aggregation
+        Query baseQuery = buildMongoQuery(userId, null, null, null, null, null, null);
+        
+        Query completedQuery = new Query(baseQuery.getQueryObject());
+        completedQuery.addCriteria(Criteria.where("status").is(Status.COMPLETED));
+        long completedCount = mongoTemplate.count(completedQuery, TranscriptionRequest.class);
+        
+        Query processingQuery = new Query(baseQuery.getQueryObject());
+        processingQuery.addCriteria(Criteria.where("status").is(Status.PROCESSING));
+        long processingCount = mongoTemplate.count(processingQuery, TranscriptionRequest.class);
+        
+        Query failedQuery = new Query(baseQuery.getQueryObject());
+        failedQuery.addCriteria(Criteria.where("status").is(Status.FAILED));
+        long failedCount = mongoTemplate.count(failedQuery, TranscriptionRequest.class);
+        
+        overview.setCompleted(completedCount);
+        overview.setProcessing(processingCount);
+        overview.setFailed(failedCount);
+        
+        // Calculate used quota (sum of durationSecs for all requests)
+        List<TranscriptionRequest> allRequests = mongoTemplate.find(baseQuery, TranscriptionRequest.class);
+        long usedQuota = allRequests.stream()
+                .mapToLong(req -> req.getDurationSecs() != null ? req.getDurationSecs().longValue() : 0L)
+                .sum();
+        overview.setUsedQuota(usedQuota);
+        
         response.setOverview(overview);
 
         return response;
