@@ -20,6 +20,15 @@ public class TranscriptionRequestController {
         this.transcriptionRequestService = transcriptionRequestService;
     }
 
+    /**
+     * Create a new transcription request
+     * 
+     * Handles multipart/form-data file upload using MultipartFile.
+     * The audio file is received as a MultipartFile and processed for transcription.
+     * 
+     * @param requestDTO DTO containing audio file (MultipartFile), speakers count, language, and category
+     * @return TranscriptionRequestDTO with created request details
+     */
     @PostMapping
     public ResponseEntity<?> createTranscriptionRequest(
             @Valid @ModelAttribute CreateTranscriptionRequestDTO requestDTO) {

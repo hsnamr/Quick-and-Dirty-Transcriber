@@ -5,8 +5,22 @@ import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import org.springframework.web.multipart.MultipartFile;
 
+/**
+ * DTO for creating a transcription request
+ * 
+ * Uses MultipartFile to handle audio file uploads via multipart/form-data.
+ * The audio file is received as a MultipartFile which provides access to:
+ * - File content (via getInputStream())
+ * - Original filename (via getOriginalFilename())
+ * - File size (via getSize())
+ * - Content type (via getContentType())
+ */
 public class CreateTranscriptionRequestDTO {
 
+    /**
+     * Audio file to transcribe
+     * Received as MultipartFile from multipart/form-data request
+     */
     @NotNull(message = "Audio file is required")
     private MultipartFile audioFile;
 
