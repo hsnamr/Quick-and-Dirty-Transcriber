@@ -45,7 +45,6 @@ public class TranscriptionRequestServiceImpl implements TranscriptionRequestServ
     private final MongoTemplate mongoTemplate;
     private final MetadataExtractionService metadataExtractionService;
     private final LanguageService languageService;
-    private final QuotaService quotaService;
     private final TranscriptionEngineService transcriptionEngineService;
     private final StatusManagementService statusManagementService;
     private final EmailService emailService;
@@ -71,7 +70,6 @@ public class TranscriptionRequestServiceImpl implements TranscriptionRequestServ
         this.mongoTemplate = mongoTemplate;
         this.metadataExtractionService = metadataExtractionService;
         this.languageService = languageService;
-        this.quotaService = quotaService;
         this.transcriptionEngineService = transcriptionEngineService;
         this.statusManagementService = statusManagementService;
         this.emailService = emailService;
@@ -103,21 +101,12 @@ public class TranscriptionRequestServiceImpl implements TranscriptionRequestServ
             throw new ValidationException("Failed to extract audio metadata: " + e.getMessage());
         }
 
-        // Validate duration
+        // 3. Validate duration
         AudioValidator.validateDuration(
                 metadata.getDurationSeconds(),
-                null, // min will be checked by quota service
-                null  // max will be checked by quota service
+                null, // min will use default from AudioValidator
+                null  // max will use default from AudioValidator
         );
-
-        // 3. Validate quota
-        // COMMENTED OUT: Quota calculation disabled
-        // try {
-        //     quotaService.validateQuota(userId, metadata.getDurationSeconds());
-        // } catch (Exception e) {
-        //     logger.warn("Quota validation failed for user {}: {}", userId, e.getMessage());
-        //     throw e; // Re-throw quota exceptions
-        // }
 
         // 4. Resolve language
         TranscriptionLanguage language = languageService.resolveLanguage(requestDTO.getLanguage());
@@ -283,13 +272,7 @@ public class TranscriptionRequestServiceImpl implements TranscriptionRequestServ
         overview.setCompleted(completedCount);
         overview.setProcessing(processingCount);
         overview.setFailed(failedCount);
-        
-        // Calculate used quota (sum of durationSecs for all requests)
-        List<TranscriptionRequest> allRequests = mongoTemplate.find(baseQuery, TranscriptionRequest.class);
-        long usedQuota = allRequests.stream()
-                .mapToLong(req -> req.getDurationSecs() != null ? req.getDurationSecs().longValue() : 0L)
-                .sum();
-        overview.setUsedQuota(usedQuota);
+        overview.setUsedQuota(null); // Quota calculation removed, using rate limiting instead
         
         response.setOverview(overview);
         

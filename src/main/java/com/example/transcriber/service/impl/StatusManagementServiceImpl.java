@@ -4,7 +4,6 @@ import com.example.transcriber.model.TranscriptionRequest;
 import com.example.transcriber.model.enums.Status;
 import com.example.transcriber.repository.TranscriptionRequestRepository;
 import com.example.transcriber.service.EmailService;
-import com.example.transcriber.service.QuotaService;
 import com.example.transcriber.service.StatusManagementService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,14 +19,11 @@ public class StatusManagementServiceImpl implements StatusManagementService {
     private static final Logger logger = LoggerFactory.getLogger(StatusManagementServiceImpl.class);
 
     private final TranscriptionRequestRepository requestRepository;
-    private final QuotaService quotaService;
     private final EmailService emailService;
 
     public StatusManagementServiceImpl(TranscriptionRequestRepository requestRepository,
-                                     QuotaService quotaService,
                                      EmailService emailService) {
         this.requestRepository = requestRepository;
-        this.quotaService = quotaService;
         this.emailService = emailService;
     }
 
@@ -86,22 +82,7 @@ public class StatusManagementServiceImpl implements StatusManagementService {
     public void handleStatusChangeToFailed(TranscriptionRequest request, String errorMessage) {
         logger.info("Handling status change to FAILED for request {}: {}", request.getId(), errorMessage);
 
-        // Restore quota if it was consumed
-        // COMMENTED OUT: Quota calculation disabled
-        // if (request.getQuotaConsumed() != null && request.getQuotaConsumed()) {
-        //     try {
-        //         // Use numericId for quota service
-        //         quotaService.restoreQuota(
-        //                 request.getUserId(),
-        //                 request.getNumericId(),
-        //                 request.getDurationSecs().doubleValue()
-        //         );
-        //         logger.info("Restored quota for failed request {}", request.getId());
-        //     } catch (Exception e) {
-        //         logger.error("Failed to restore quota for request {}", request.getId(), e);
-        //         // Log but don't fail - quota restoration is best effort
-        //     }
-        // }
+        // Quota restoration removed - using rate limiting instead
 
         // Send failure email
         try {

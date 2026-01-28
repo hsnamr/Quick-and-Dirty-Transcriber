@@ -31,6 +31,7 @@ public class SecurityConfig {
                 .anyRequest().authenticated()
             )
             .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
+        // Note: RateLimitingFilter is added via @Order annotation and runs before security filters
 
         return http.build();
     }
