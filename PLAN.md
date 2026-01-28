@@ -359,7 +359,7 @@ OTHER(8, "other", "Other")
 
 **Status Change Actions**:
 - On COMPLETED: Send completion email
-- On FAILED: Restore quota, send failure email
+- On FAILED: Send failure email
 
 **Status Update**:
 - Handle callback from external service

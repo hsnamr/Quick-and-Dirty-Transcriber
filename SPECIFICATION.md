@@ -51,7 +51,6 @@ This service is designed to be **fully independent** and can operate standalone.
 - Perform transcription using Vosk library (or integrate with external transcription service)
 - Integrate with Kafka message queue for callbacks and broadcasts
 - Integrate with email service for notifications
-- Integrate with quota/subscription service (or manage internally)
 
 ---
 
@@ -737,72 +736,30 @@ After authentication, the service should have access to:
 - `transcription_json`: Full Vosk JSON result with word-level timestamps
 - `transcription_metadata`: Additional metadata about the transcription
 
-### 6.3 Quota Management
+### 6.3 Rate Limiting
 
-#### 6.3.1 Quota Validation
+**Purpose**: Protect APIs from overuse by limiting the number of requests per time window.
 
-**Purpose**: Validate that user has sufficient quota before processing.
+**Implementation**:
+- Uses Bucket4j library (same library used by Spring Cloud Gateway)
+- Token bucket algorithm with configurable refill rate and burst capacity
+- Applied via filter early in the request processing chain (before authentication)
 
-**Validation Rules**:
-1. **Duration Limits**:
-   - Minimum: 1 second
-   - Maximum: 3600 seconds (1 hour)
-   - If duration exceeds limits, reject with appropriate error
+**Configuration**:
+- `rate.limit.requests-per-minute`: Number of requests allowed per minute (default: 10)
+- `rate.limit.burst-capacity`: Maximum burst capacity (default: 20)
 
-2. **Quota Availability**:
-   - Check user's company has active subscription for FDTranscriber
-   - Check remaining quota (total quota - consumed quota)
-   - Remaining quota must be >= audio duration in seconds
-   - If insufficient quota, reject with error message
+**Behavior**:
+- Allows up to `burst-capacity` requests immediately
+- Refills at `requests-per-minute` rate
+- Health check endpoints (`/actuator/health/**`) are excluded from rate limiting
+- Returns HTTP 429 (Too Many Requests) when limit is exceeded
 
-3. **Quota Source**:
-   - Quota is measured in seconds of audio transcription
-   - Total quota comes from company's active package
-   - Consumed quota is tracked (likely in Redis or separate service)
-   - Feature name: `AUDIO_TRANSCRIPTION`
-   - Product name: `FDTranscriber`
-
-#### 6.3.2 Quota Consumption
-
-**When**: Immediately after creating transcription request (before processing)
-
-**Process**:
-1. Lock company record to prevent concurrent quota operations
-2. Re-validate quota availability (double-check)
-3. Consume quota equal to audio duration in seconds
-4. Mark `quota_consumed = true` on transcription request
-5. Send quota consumption message to Kafka (if using external quota service)
-
-**Message Format** (Kafka):
+**Error Response** (429):
 ```json
 {
-  "company_id": 123,
-  "product_id": 456,
-  "count": 3600,
-  "date": 1706352000
-}
-```
-
-#### 6.3.3 Quota Restoration
-
-**When**: 
-- If transcription request fails (status changes to `FAILED`)
-- Only if quota was actually consumed (`quota_consumed = true`)
-- Only if previous status was `PROCESSING`
-
-**Process**:
-1. Check if status changed from `PROCESSING` to `FAILED`
-2. Check if `quota_consumed = true`
-3. Restore quota by sending negative count to Kafka
-4. Log the restoration
-
-**Message Format** (Kafka):
-```json
-{
-  "consumer_id": 123,
-  "product_id": 456,
-  "count": -3600,  // Negative to restore
-  "date": 1706352000
+  "error": "Rate limit exceeded. Please try again later.",
+  "message": "Too many requests. Please wait before making another request."
 }
 ```
 
