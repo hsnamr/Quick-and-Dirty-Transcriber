@@ -789,7 +789,6 @@ PROCESSING → FAILED
 - Log activity (if applicable)
 
 **On Status Change to FAILED**:
-- Restore quota (if consumed)
 - Send failure email notification
 - Log activity (if applicable)
 
@@ -935,25 +934,7 @@ PROCESSING → FAILED
 - Request not found: Log error, skip message
 - Update failure: Log error, retry or skip
 
-#### 7.2.2 Quota Messages
-
-**Purpose**: Send quota consumption/restoration messages.
-
-**Topic**: `companies_count` (or configurable)
-**Producer**: Free and Dirty Transcriber service
-**Consumer**: Quota/subscription service
-
-**Message Format**:
-```json
-{
-  "company_id": 123,
-  "product_id": 456,
-  "count": 3600,  // Positive for consumption, negative for restoration
-  "date": 1706352000
-}
-```
-
-#### 7.2.3 Frontend Broadcast
+#### 7.2.2 Frontend Broadcast
 
 **Purpose**: Send transcription data to frontend via Kafka for real-time updates.
 
@@ -1074,7 +1055,6 @@ PROCESSING → FAILED
 - Invalid language code
 - Duration too short (< 1 second)
 - Duration too long (> 3600 seconds)
-- Quota insufficient for duration
 - Metadata extraction failed
 
 #### 8.3.4 Business Logic Errors (422)
@@ -1168,7 +1148,6 @@ PROCESSING → FAILED
   "category": "MEETING",
   "userId": NumberLong(789),
   "consumerId": NumberLong(456),
-  "quotaConsumed": true,
   "transcriptionText": "Full transcribed text...",
   "transcriptionJson": { /* Vosk JSON result */ },
   "transcriptionMetadata": { /* Metadata */ },
@@ -1279,7 +1258,6 @@ spring.kafka.producer.enable-idempotence=true
 
 # Kafka Topics
 kafka.topics.status-updates=${KAFKA_TOPIC_STATUS_UPDATES:audio_text_request_updater}
-kafka.topics.quota=${KAFKA_TOPIC_QUOTA:companies_count}
 kafka.topics.frontend-broadcast=${KAFKA_TOPIC_FRONTEND_BROADCAST:frontend_audio_to_text_data}
 
 # File Upload
@@ -1356,7 +1334,6 @@ logging.level.org.springframework.web=DEBUG
   - Graceful degradation (email failures shouldn't fail requests)
   - Vosk library initialization failures should be handled gracefully
 - **Data Consistency**: 
-  - Use MongoDB transactions for quota operations (if supported)
   - Implement idempotency for status updates
 
 ### 11.4 Security
