@@ -178,7 +178,7 @@ This plan outlines the implementation of an audio-to-text transcription service 
 **Deliverables**:
 - ✅ All service implementations complete
 - ✅ Business logic working
-- ✅ Quota management functional
+- ✅ Rate limiting functional
 - ✅ Status management working
 - ✅ Transcription processing (Vosk) working
 
@@ -348,7 +348,7 @@ This plan outlines the implementation of an audio-to-text transcription service 
 3. **End-to-End Tests**
    - Complete transcription flow
    - Error scenarios
-   - Quota scenarios
+   - Rate limiting scenarios
 
 4. **Documentation**
    - API documentation (OpenAPI/Swagger)

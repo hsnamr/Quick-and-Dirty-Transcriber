@@ -364,7 +364,7 @@ OTHER(8, "other", "Other")
 **Status Update**:
 - Handle callback from external service
 - Update status atomically
-- Trigger side effects (email, quota restoration)
+- Trigger side effects (email notifications)
 
 ---
 
@@ -539,20 +539,6 @@ OTHER(8, "other", "Other")
 - Log email failures
 - Retry mechanism (optional)
 
-### 7.4 Quota/Subscription Service Integration
-
-**Options**:
-1. **REST API**: Call external service to check/consume quota
-2. **Message Queue**: Send messages, service handles quota
-3. **Internal**: Manage quota in database
-
-**Recommended**: Message Queue approach (Option 2) for decoupling
-
-**If Using REST API**:
-- `QuotaServiceClient`: HTTP client for quota operations
-- Check quota endpoint
-- Consume quota endpoint
-- Restore quota endpoint
 
 ---
 
@@ -873,7 +859,6 @@ OTHER(8, "other", "Other")
 
 ### 13.2 Implementation Notes
 
-- Use transactions for quota operations to ensure atomicity
 - Use async processing for email sending
 - Cache language list (if frequently accessed)
 - Implement retry logic for external service calls
