@@ -579,7 +579,6 @@ OTHER(8, "other", "Other")
 
 **Custom Exception Classes**:
 - `TranscriptionRequestNotFoundException`
-- `QuotaExceededException`
 - `InvalidAudioFileException`
 - `TranscriptionServiceException`
 - `InvalidStatusTransitionException`
