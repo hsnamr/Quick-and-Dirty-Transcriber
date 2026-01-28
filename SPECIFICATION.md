@@ -97,7 +97,6 @@ This service is designed to be **fully independent** and can operate standalone.
 │  │  Email Service                       │ │
 │  └──────────────────────────────────────┘ │
 │  ┌──────────────────────────────────────┐ │
-│  │  Quota/Subscription Service         │ │
 │  └──────────────────────────────────────┘ │
 └────────────────────────────────────────────┘
 ```
@@ -1029,7 +1028,8 @@ PROCESSING → FAILED
 | 201 | Created | Resource created successfully |
 | 400 | Bad Request | Invalid request parameters |
 | 401 | Unauthorized | Authentication required or failed |
-| 403 | Forbidden | Insufficient permissions or quota exceeded |
+| 403 | Forbidden | Insufficient permissions |
+| 429 | Too Many Requests | Rate limit exceeded |
 | 404 | Not Found | Resource not found |
 | 422 | Unprocessable Entity | Validation failed or business rule violation |
 | 500 | Internal Server Error | Unexpected server error |
