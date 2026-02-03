@@ -41,9 +41,9 @@ public class RateLimitingFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, 
                                    FilterChain filterChain) throws ServletException, IOException {
         
-        // Skip rate limiting for health check endpoints
-        String path = request.getRequestURI();
-        if (path.startsWith("/actuator/health")) {
+        // Skip rate limiting for health check and API documentation endpoints
+        String path = request.getRequestURI() != null ? request.getRequestURI() : "";
+        if (path.startsWith("/actuator/health") || path.contains("api-docs") || path.contains("swagger-ui")) {
             filterChain.doFilter(request, response);
             return;
         }

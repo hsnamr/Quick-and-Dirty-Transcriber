@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Audio Transcription Failed</title>
+</head>
+<body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; padding: 20px;">
+  <h2 style="color: #dc2626;">Audio Transcription Failed</h2>
+  <p>Hello <span th:text="${userName}">User</span>,</p>
+  <p>Unfortunately, your audio transcription request has failed.</p>
+  <table style="width: 100%; border-collapse: collapse; margin: 20px 0;">
+    <tr><td style="padding: 8px; border: 1px solid #ddd;"><strong>File</strong></td><td style="padding: 8px; border: 1px solid #ddd;" th:text="${fileName}">-</td></tr>
+    <tr><td style="padding: 8px; border: 1px solid #ddd;"><strong>Duration</strong></td><td style="padding: 8px; border: 1px solid #ddd;" th:text="${durationFormatted}">-</td></tr>
+    <tr><td style="padding: 8px; border: 1px solid #ddd;"><strong>Category</strong></td><td style="padding: 8px; border: 1px solid #ddd;" th:text="${category}">-</td></tr>
+    <tr><td style="padding: 8px; border: 1px solid #ddd;"><strong>Language</strong></td><td style="padding: 8px; border: 1px solid #ddd;" th:text="${languageName}">-</td></tr>
+    <tr><td style="padding: 8px; border: 1px solid #ddd;"><strong>Status</strong></td><td style="padding: 8px; border: 1px solid #ddd;">Failed</td></tr>
+    <tr><td style="padding: 8px; border: 1px solid #ddd;"><strong>Error</strong></td><td style="padding: 8px; border: 1px solid #ddd;" th:text="${errorMessage}">Unknown error</td></tr>
+  </table>
+  <p>Please try again or contact support if the issue persists.</p>
+  <p style="margin-top: 30px; color: #666; font-size: 0.9em;">— Free and Dirty Transcriber</p>
+</body>
+</html>

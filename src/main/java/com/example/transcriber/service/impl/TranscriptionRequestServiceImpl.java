@@ -438,13 +438,13 @@ public class TranscriptionRequestServiceImpl implements TranscriptionRequestServ
     // Helper methods
 
     private Query buildMongoQuery(
-            Long consumerId, String search, String status, String category,
+            Long userId, String search, String status, String category,
             Long languageId, Long startDate, Long endDate) {
         
         Query query = new Query();
         
-        // Consumer filter (required)
-        query.addCriteria(Criteria.where("consumerId").is(consumerId));
+        // User filter (required)
+        query.addCriteria(Criteria.where("userId").is(userId));
 
         // Search filter
         if (search != null && !search.isEmpty()) {

@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Audio Transcription Completed</title>
+</head>
+<body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; padding: 20px;">
+  <h2 style="color: #16a34a;">Audio Transcription Completed</h2>
+  <p>Hello <span th:text="${userName}">User</span>,</p>
+  <p>Your audio transcription has been completed successfully.</p>
+  <table style="width: 100%; border-collapse: collapse; margin: 20px 0;">
+    <tr><td style="padding: 8px; border: 1px solid #ddd;"><strong>File</strong></td><td style="padding: 8px; border: 1px solid #ddd;" th:text="${fileName}">-</td></tr>
+    <tr><td style="padding: 8px; border: 1px solid #ddd;"><strong>Duration</strong></td><td style="padding: 8px; border: 1px solid #ddd;" th:text="${durationFormatted}">-</td></tr>
+    <tr><td style="padding: 8px; border: 1px solid #ddd;"><strong>Category</strong></td><td style="padding: 8px; border: 1px solid #ddd;" th:text="${category}">-</td></tr>
+    <tr><td style="padding: 8px; border: 1px solid #ddd;"><strong>Language</strong></td><td style="padding: 8px; border: 1px solid #ddd;" th:text="${languageName}">-</td></tr>
+    <tr><td style="padding: 8px; border: 1px solid #ddd;"><strong>Status</strong></td><td style="padding: 8px; border: 1px solid #ddd;">Completed</td></tr>
+    <tr><td style="padding: 8px; border: 1px solid #ddd;"><strong>Completed at</strong></td><td style="padding: 8px; border: 1px solid #ddd;" th:text="${createdAtFormatted}">-</td></tr>
+  </table>
+  <p>You can now view the transcription results.</p>
+  <p style="margin-top: 30px; color: #666; font-size: 0.9em;">— Free and Dirty Transcriber</p>
+</body>
+</html>

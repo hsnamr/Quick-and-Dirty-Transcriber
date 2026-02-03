@@ -69,34 +69,34 @@ public class QuotaServiceImpl implements QuotaService {
         // For now, we'll assume quota is managed externally via Kafka messages
         // The external service will validate quota when it receives the consumption message
         
-        logger.info("Quota validation passed for consumer {} with duration {} seconds", consumerId, durationSeconds);
+        logger.info("Quota validation passed for user {} with duration {} seconds", userId, durationSeconds);
     }
 
     @Override
-    public void consumeQuota(Long consumerId, Long requestId, Double durationSeconds) {
-        if (consumerId == null || requestId == null || durationSeconds == null) {
-            throw new IllegalArgumentException("Consumer ID, request ID, and duration are required");
+    public void consumeQuota(Long userId, Long requestId, Double durationSeconds) {
+        if (userId == null || requestId == null || durationSeconds == null) {
+            throw new IllegalArgumentException("User ID, request ID, and duration are required");
         }
 
         // Find the request by numericId
-        Optional<TranscriptionRequest> requestOpt = requestRepository.findByNumericIdAndConsumerId(requestId, consumerId);
+        Optional<TranscriptionRequest> requestOpt = requestRepository.findByNumericIdAndUserId(requestId, userId);
         if (requestOpt.isEmpty()) {
             throw new IllegalArgumentException("Transcription request not found: " + requestId);
         }
 
         TranscriptionRequest request = requestOpt.get();
         
-        // Double-check consumer matches
-        if (!request.getConsumerId().equals(consumerId)) {
-            throw new IllegalArgumentException("Request does not belong to consumer: " + consumerId);
+        // Double-check user matches
+        if (!request.getUserId().equals(userId)) {
+            throw new IllegalArgumentException("Request does not belong to user: " + userId);
         }
 
         // Mark quota as consumed
         if (!request.getQuotaConsumed()) {
             request.setQuotaConsumed(true);
             requestRepository.save(request);
-            logger.info("Marked quota as consumed for request {} (consumer {}, duration {}s)", 
-                    requestId, consumerId, durationSeconds);
+            logger.info("Marked quota as consumed for request {} (user {}, duration {}s)", 
+                    requestId, userId, durationSeconds);
         }
 
         // Send quota consumption message to Kafka
@@ -105,9 +105,9 @@ public class QuotaServiceImpl implements QuotaService {
         Long date = Instant.now().getEpochSecond();
         
         try {
-            messageQueueService.sendQuotaConsumptionMessage(consumerId, productId, count, date);
-            logger.info("Sent quota consumption message: consumer={}, product={}, count={}", 
-                    consumerId, productId, count);
+            messageQueueService.sendQuotaConsumptionMessage(userId, productId, count, date);
+            logger.info("Sent quota consumption message: user={}, product={}, count={}", 
+                    userId, productId, count);
         } catch (Exception e) {
             logger.error("Failed to send quota consumption message", e);
             // Don't fail the request if message sending fails - quota service might handle it differently

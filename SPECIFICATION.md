@@ -148,7 +148,6 @@ This service is designed to be **fully independent** and can operate standalone.
 | status | Enum | NOT NULL, DEFAULT 'PROCESSING', INDEXED | Status: PROCESSING, COMPLETED, FAILED |
 | category | Enum | NOT NULL, DEFAULT 'OTHER', INDEXED | Category (see below) |
 | userId | Long | NOT NULL, INDEXED | User who created the request |
-| consumerId | Long | NOT NULL, INDEXED | Consumer owning the request |
 | transcriptionText | String | NULLABLE | Transcribed text result |
 | transcriptionJson | Object | NULLABLE | Full transcription JSON result |
 | transcriptionMetadata | Object | NULLABLE | Transcription metadata |
@@ -180,9 +179,8 @@ This service is designed to be **fully independent** and can operate standalone.
 - Index on `status`
 - Index on `category`
 - Index on `userId`
-- Index on `consumerId`
 
-**Note**: `userId` and `consumerId` are stored as Long values. If `users` and `consumers` collections are in a separate service, maintain referential integrity through application logic.
+**Note**: `userId` is stored as a Long value. If the `users` collection is in a separate service, maintain referential integrity through application logic.
 
 ### 3.2 TranscriptionLanguage
 
@@ -270,51 +268,34 @@ This service is designed to be **fully independent** and can operate standalone.
 ```
 
 #### TranscriptionRequestListDTO (Response)
+Response JSON uses camelCase. Example:
 ```json
 {
-  "data": [
-    // Array of TranscriptionRequestDTO objects
-  ],
+  "data": [],
   "overview": {
     "total": 100,
     "completed": 75,
     "processing": 20,
-    "failed": 5,
+    "failed": 5
   },
   "pagination": {
     "page": 1,
-    "per_page": 10,
+    "perPage": 10,
     "total": 100,
-    "total_pages": 10
+    "totalPages": 10
   },
   "filters": {
     "languages": [
-      {
-        "id": 1,
-        "name": "English",
-        "code": "en"
-      }
+      { "id": 1, "name": "English", "code": "en" }
     ],
     "categories": [
-      {
-        "key": "meeting",
-        "name": "Meeting"
-      }
+      { "key": "meeting", "name": "Meeting" }
     ],
     "statuses": ["processing", "completed", "failed"]
   },
-  "sorting_options": [
-    {
-      "key": "id",
-      "display_name": "ID",
-      "sort_by": ["id"]
-    },
-    {
-      "key": "file_name",
-      "display_name": "File Name",
-      "sort_by": ["LOWER(file_name)"]
-    }
-    // ... more options
+  "sortingOptions": [
+    { "key": "id", "displayName": "ID", "sortBy": ["id"] },
+    { "key": "fileName", "displayName": "File Name", "sortBy": ["fileName"] }
   ]
 }
 ```
@@ -624,7 +605,7 @@ auth-token: <jwt_token>
 
 **Business Logic**:
 1. Authenticate and authorize user
-2. Find transcription request by numeric ID and consumer_id
+2. Find transcription request by numeric ID and user_id
 3. Verify status is `COMPLETED` or `FAILED` (cannot delete while processing)
 4. Delete the transcription record
 5. Return success response
@@ -660,7 +641,7 @@ auth-token: <jwt_token>
 - **Token Validation**:
   - Verify token signature
   - Check token expiration
-  - Extract user information (user_id, consumer_id, permissions)
+  - Extract user information (user_id, permissions)
   - Validate user exists and is active
 
 ### 5.2 Authorization
@@ -941,16 +922,12 @@ PROCESSING → FAILED
 
 **Topic**: `frontend_audio_to_text_data` (or configurable)
 
-**Message Format**:
+**Message Format** (example; implementation may use a subset of fields):
 ```json
 {
-  "request_id": 123,
-    "consumer_id": 456,
-  "account_id": 456,
-  "company_schema": "company_456_schema",
-  "queue_name": "frontend_audio_to_text_data_company_456_0_1706352000",
-  "routing_key": "audio_to_text_data_company_456_0_1706352000",
+  "request_id": "string",
   "user_id": 789,
+  "account_id": 789,
   "file_name": "meeting.mp3",
   "duration_secs": 3600,
   "speakers_count": 2,
@@ -959,11 +936,9 @@ PROCESSING → FAILED
   "status": "completed",
   "created_at": "2026-01-27T10:00:00Z",
   "updated_at": "2026-01-27T10:05:00Z",
-  "product_id": 456,
   "product": "FDTranscriber",
   "page_name": "audio_to_text",
   "data_source_name": "fd_transcriber",
-  "request_timestamp": 1706352000,
   "filters": {}
 }
 ```
@@ -1111,7 +1086,6 @@ PROCESSING → FAILED
 │ status                  │  │
 │ category                │  │
 │ userId                  │  │
-│ consumerId               │  │
 │ transcriptionText       │  │
 │ transcriptionJson       │  │
 │ transcriptionMetadata   │  │
@@ -1165,7 +1139,6 @@ PROCESSING → FAILED
 - `status`: Index
 - `category`: Index
 - `userId`: Index
-- `consumerId`: Index
 
 #### transcription_languages Collection
 ```javascript
