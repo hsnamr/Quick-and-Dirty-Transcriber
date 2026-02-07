@@ -1,7 +1,6 @@
 # Audio To Text Service - Implementation Plan
 
 ## Document Information
-- **Service Name**: Audio To Text Service (AI SUITE)
 - **Technology Stack**: Java 17+ with Spring Boot 3.x
 - **Document Version**: 1.0
 - **Date**: January 27, 2026
