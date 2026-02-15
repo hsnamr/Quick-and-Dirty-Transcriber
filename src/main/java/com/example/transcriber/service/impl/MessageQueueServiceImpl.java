@@ -27,6 +27,9 @@ public class MessageQueueServiceImpl implements MessageQueueService {
     @Value("${kafka.topics.frontend-broadcast:frontend_audio_to_text_data}")
     private String frontendBroadcastTopic;
 
+    @Value("${staci.kafka.topic.dispatcher-requests:staci.dispatcher.requests}")
+    private String staciDispatcherRequestsTopic;
+
     public MessageQueueServiceImpl(KafkaTemplate<String, Object> kafkaTemplate) {
         this.kafkaTemplate = kafkaTemplate;
     }
@@ -85,6 +88,18 @@ public class MessageQueueServiceImpl implements MessageQueueService {
 
         String key = String.format("user_%d_request_%d", request.getUserId(), request.getId());
         sendMessage(frontendBroadcastTopic, key, message);
+        sendStaciTranscriberDispatcher(key, message);
+    }
+
+    /**
+     * Send to Staci canonical topic staci.dispatcher.requests with eventName staci.transcriber.dispatcher
+     * so GoDispatcher (or other Staci services) can consume the request.
+     */
+    private void sendStaciTranscriberDispatcher(String key, Map<String, Object> eventData) {
+        Map<String, Object> envelope = new HashMap<>();
+        envelope.put("eventName", "staci.transcriber.dispatcher");
+        envelope.put("eventData", eventData);
+        sendMessage(staciDispatcherRequestsTopic, key, envelope);
     }
 
     private void sendMessage(String topic, String key, Object message) {
